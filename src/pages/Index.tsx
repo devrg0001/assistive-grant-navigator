@@ -3,8 +3,36 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Building2, DollarSign, GraduationCap, Home, Search, User } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { grants } from "@/data/grants";
+import { useToast } from "@/components/ui/use-toast";
 
 const Index = () => {
+  const [location, setLocation] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const { toast } = useToast();
+
+  const handleEligibilityCheck = () => {
+    if (!location) {
+      toast({
+        title: "Location Required",
+        description: "Please enter your location to check grant eligibility.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const availableGrants = grants.filter(grant => 
+      (!grant.eligibilityCriteria.location || 
+       grant.eligibilityCriteria.location.includes(location))
+    );
+
+    toast({
+      title: "Grants Found!",
+      description: `We found ${availableGrants.length} grants you might be eligible for. Sign in to view detailed matches.`,
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
       <header className="fixed top-0 w-full bg-white/80 backdrop-blur-md border-b z-50">
@@ -35,18 +63,20 @@ const Index = () => {
               Find financial assistance programs tailored to your situation. We connect you directly with government resources.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="flex items-center gap-2">
+              <Button size="lg" className="flex items-center gap-2" onClick={() => setSelectedCategory('all')}>
                 <Search className="w-4 h-4" />
                 Find Grants
               </Button>
-              <Button variant="outline" size="lg">
+              <Button variant="outline" size="lg" onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}>
                 Learn More
               </Button>
             </div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 mb-16">
-            <Card className="p-6 glass-card animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
+            <Card className="p-6 glass-card animate-fade-in-up cursor-pointer hover:scale-105 transition-transform" 
+                  onClick={() => setSelectedCategory('housing')}
+                  style={{ animationDelay: "0.1s" }}>
               <div className="rounded-full bg-green-100 w-12 h-12 flex items-center justify-center mb-4">
                 <Home className="w-6 h-6 text-green-600" />
               </div>
@@ -56,7 +86,9 @@ const Index = () => {
               </p>
             </Card>
 
-            <Card className="p-6 glass-card animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
+            <Card className="p-6 glass-card animate-fade-in-up cursor-pointer hover:scale-105 transition-transform" 
+                  onClick={() => setSelectedCategory('education')}
+                  style={{ animationDelay: "0.2s" }}>
               <div className="rounded-full bg-purple-100 w-12 h-12 flex items-center justify-center mb-4">
                 <GraduationCap className="w-6 h-6 text-purple-600" />
               </div>
@@ -66,7 +98,9 @@ const Index = () => {
               </p>
             </Card>
 
-            <Card className="p-6 glass-card animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
+            <Card className="p-6 glass-card animate-fade-in-up cursor-pointer hover:scale-105 transition-transform" 
+                  onClick={() => setSelectedCategory('business')}
+                  style={{ animationDelay: "0.3s" }}>
               <div className="rounded-full bg-blue-100 w-12 h-12 flex items-center justify-center mb-4">
                 <Building2 className="w-6 h-6 text-blue-600" />
               </div>
@@ -83,16 +117,35 @@ const Index = () => {
                 Quick Grant Eligibility Check
               </h2>
               <div className="space-y-4">
-                <Input placeholder="Enter your location" className="w-full" />
+                <Input 
+                  placeholder="Enter your location" 
+                  className="w-full" 
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                />
                 <div className="grid grid-cols-2 gap-4">
-                  <Button variant="outline" className="w-full">
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => toast({
+                      title: "Income Level",
+                      description: "This feature will be available after sign up.",
+                    })}
+                  >
                     Income Level
                   </Button>
-                  <Button variant="outline" className="w-full">
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => toast({
+                      title: "Grant Categories",
+                      description: `Selected category: ${selectedCategory || 'None'}`,
+                    })}
+                  >
                     Grant Type
                   </Button>
                 </div>
-                <Button className="w-full">Check Eligibility</Button>
+                <Button className="w-full" onClick={handleEligibilityCheck}>Check Eligibility</Button>
               </div>
             </Card>
           </div>
