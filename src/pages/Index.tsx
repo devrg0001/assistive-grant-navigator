@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Building2, GraduationCap, Home, Search, User } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Building2, GraduationCap, Home, Search } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { grants } from "@/data/grants";
 import { useToast } from "@/components/ui/use-toast";
@@ -12,6 +12,7 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const auth = localStorage.getItem('isAuthenticated');
@@ -33,20 +34,22 @@ const Index = () => {
        grant.eligibilityCriteria.location.includes(location))
     );
 
-    if (selectedCategory) {
-      const categoryGrants = availableGrants.filter(grant => grant.category === selectedCategory);
-      toast({
-        title: `${categoryGrants.length} Grants Found!`,
-        description: isAuthenticated 
-          ? `We found ${categoryGrants.length} ${selectedCategory} grants in ${location}.`
-          : "Sign in to view detailed matches and apply.",
+    const filteredGrants = selectedCategory 
+      ? availableGrants.filter(grant => grant.category === selectedCategory)
+      : availableGrants;
+
+    if (isAuthenticated) {
+      navigate("/grants", {
+        state: {
+          filteredGrants,
+          location,
+          category: selectedCategory
+        }
       });
     } else {
       toast({
-        title: `${availableGrants.length} Grants Found!`,
-        description: isAuthenticated 
-          ? `We found ${availableGrants.length} grants available in ${location}.`
-          : "Sign in to view detailed matches and apply.",
+        title: `${filteredGrants.length} Grants Found!`,
+        description: "Sign in to view detailed matches and apply.",
       });
     }
   };
