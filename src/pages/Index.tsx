@@ -1,16 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Building2, DollarSign, GraduationCap, Home, Search, User } from "lucide-react";
+import { Building2, GraduationCap, Home, Search, User } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { grants } from "@/data/grants";
 import { useToast } from "@/components/ui/use-toast";
 
 const Index = () => {
   const [location, setLocation] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const auth = localStorage.getItem('isAuthenticated');
+    setIsAuthenticated(auth === 'true');
+  }, []);
 
   const handleEligibilityCheck = () => {
     if (!location) {
@@ -27,10 +33,22 @@ const Index = () => {
        grant.eligibilityCriteria.location.includes(location))
     );
 
-    toast({
-      title: "Grants Found!",
-      description: `We found ${availableGrants.length} grants you might be eligible for. Sign in to view detailed matches.`,
-    });
+    if (selectedCategory) {
+      const categoryGrants = availableGrants.filter(grant => grant.category === selectedCategory);
+      toast({
+        title: `${categoryGrants.length} Grants Found!`,
+        description: isAuthenticated 
+          ? `We found ${categoryGrants.length} ${selectedCategory} grants in ${location}.`
+          : "Sign in to view detailed matches and apply.",
+      });
+    } else {
+      toast({
+        title: `${availableGrants.length} Grants Found!`,
+        description: isAuthenticated 
+          ? `We found ${availableGrants.length} grants available in ${location}.`
+          : "Sign in to view detailed matches and apply.",
+      });
+    }
   };
 
   return (
@@ -41,14 +59,35 @@ const Index = () => {
             GrantFinder
           </Link>
           <div className="flex items-center gap-4">
-            <Link to="/signin">
-              <Button variant="ghost" size="sm">
-                Sign In
+            {isAuthenticated ? (
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => {
+                  localStorage.removeItem('isAuthenticated');
+                  localStorage.removeItem('userEmail');
+                  localStorage.removeItem('userName');
+                  setIsAuthenticated(false);
+                  toast({
+                    title: "Signed out",
+                    description: "You have been successfully signed out.",
+                  });
+                }}
+              >
+                Sign Out
               </Button>
-            </Link>
-            <Link to="/signup">
-              <Button size="sm">Get Started</Button>
-            </Link>
+            ) : (
+              <>
+                <Link to="/signin">
+                  <Button variant="ghost" size="sm">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link to="/signup">
+                  <Button size="sm">Get Started</Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -112,13 +151,13 @@ const Index = () => {
           </div>
 
           <div className="max-w-2xl mx-auto">
-            <Card className="p-8 glass-card">
+            <Card className="p-8">
               <h2 className="text-2xl font-semibold mb-6 text-center">
                 Quick Grant Eligibility Check
               </h2>
               <div className="space-y-4">
                 <Input 
-                  placeholder="Enter your location" 
+                  placeholder="Enter your location (e.g., New York)" 
                   className="w-full" 
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
@@ -127,20 +166,26 @@ const Index = () => {
                   <Button 
                     variant="outline" 
                     className="w-full"
-                    onClick={() => toast({
-                      title: "Income Level",
-                      description: "This feature will be available after sign up.",
-                    })}
+                    onClick={() => {
+                      if (!isAuthenticated) {
+                        toast({
+                          title: "Sign in required",
+                          description: "Please sign in to access detailed eligibility checks.",
+                        });
+                      }
+                    }}
                   >
                     Income Level
                   </Button>
                   <Button 
                     variant="outline" 
                     className="w-full"
-                    onClick={() => toast({
-                      title: "Grant Categories",
-                      description: `Selected category: ${selectedCategory || 'None'}`,
-                    })}
+                    onClick={() => {
+                      toast({
+                        title: "Selected Category",
+                        description: `Current category: ${selectedCategory || 'All grants'}`,
+                      });
+                    }}
                   >
                     Grant Type
                   </Button>

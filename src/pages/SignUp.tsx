@@ -18,11 +18,16 @@ const SignUp = () => {
     e.preventDefault();
     
     if (name && email && password) {
+      // Store user data - in a real app, this would be sent to a backend
+      localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('userEmail', email);
+      localStorage.setItem('userName', name);
+      
       toast({
         title: "Account created!",
-        description: "Welcome to GrantFinder. You can now sign in.",
+        description: "Welcome to GrantFinder. You can now access all features.",
       });
-      navigate("/signin");
+      navigate("/");
     } else {
       toast({
         title: "Error",
@@ -40,7 +45,7 @@ const SignUp = () => {
           Back to Home
         </Link>
         
-        <Card className="p-8 glass-card">
+        <Card className="p-8">
           <div className="text-center mb-8">
             <h1 className="text-2xl font-semibold mb-2">Create Your Account</h1>
             <p className="text-gray-600">Start finding grants tailored to your needs</p>
@@ -54,6 +59,7 @@ const SignUp = () => {
                 placeholder="Enter your full name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                required
               />
             </div>
 
@@ -65,6 +71,7 @@ const SignUp = () => {
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
 
@@ -76,6 +83,7 @@ const SignUp = () => {
                 placeholder="Create a password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
               />
             </div>
 

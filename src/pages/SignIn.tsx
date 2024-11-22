@@ -16,8 +16,12 @@ const SignIn = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Mock authentication
+    // Mock authentication - in a real app, this would validate against a backend
     if (email && password) {
+      // Store user session
+      localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('userEmail', email);
+      
       toast({
         title: "Welcome back!",
         description: "You have successfully signed in.",
@@ -40,7 +44,7 @@ const SignIn = () => {
           Back to Home
         </Link>
         
-        <Card className="p-8 glass-card">
+        <Card className="p-8">
           <div className="text-center mb-8">
             <h1 className="text-2xl font-semibold mb-2">Welcome Back</h1>
             <p className="text-gray-600">Sign in to access your grant recommendations</p>
@@ -55,6 +59,7 @@ const SignIn = () => {
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
 
@@ -66,6 +71,7 @@ const SignIn = () => {
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
               />
             </div>
 

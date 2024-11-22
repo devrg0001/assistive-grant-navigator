@@ -2,7 +2,7 @@ export interface Grant {
   id: string;
   title: string;
   description: string;
-  category: 'housing' | 'education' | 'business' | 'transportation';
+  category: 'housing' | 'education' | 'business' | 'transportation' | 'veteran' | 'personal';
   eligibilityCriteria: {
     maxIncome?: number;
     location?: string[];
@@ -16,42 +16,52 @@ export interface Grant {
 export const grants: Grant[] = [
   {
     id: '1',
-    title: 'First-Time Homebuyer Assistance',
-    description: 'Financial assistance for first-time homebuyers with low to moderate income.',
-    category: 'housing',
+    title: 'NY State Seed Funding Grant Program',
+    description: 'The New York State Seed Funding Grant Program provides assistance to early-stage small businesses to succeed in a recovering New York State economy.',
+    category: 'business',
     eligibilityCriteria: {
-      maxIncome: 80000,
-      location: ['California'],
-      requirements: ['First-time homebuyer', 'Credit score above 620', 'Income verification required']
+      location: ['New York'],
+      requirements: [
+        'Business operational after September 1, 2018',
+        'Must be a small business',
+        'Must be located in New York State'
+      ]
     },
-    amount: 'Up to $25,000',
-    applicationUrl: 'https://www.hud.gov/topics/grants',
+    amount: '$200,000,000',
+    applicationUrl: 'https://www.ny.gov/seedfunding',
     deadline: '2024-12-31'
   },
   {
     id: '2',
-    title: 'Small Business Innovation Grant',
-    description: 'Support for small businesses developing innovative solutions.',
-    category: 'business',
+    title: 'NYS Education Department Grants',
+    description: 'The New York State Education Department provides various grants aimed at supporting public school districts in improving educational outcomes, enhancing infrastructure, and addressing specific educational challenges.',
+    category: 'education',
     eligibilityCriteria: {
-      maxIncome: 150000,
-      requirements: ['Registered business', 'Less than 50 employees', 'Innovation focus']
+      location: ['New York'],
+      requirements: [
+        'Must be a public school district',
+        'Must demonstrate need for improvement',
+        'Must have comprehensive support plan'
+      ]
     },
-    amount: '$50,000 - $150,000',
-    applicationUrl: 'https://www.grants.gov/web/grants',
-    deadline: '2024-09-30'
+    amount: 'Varies by program',
+    applicationUrl: 'https://www.nysed.gov/funding-opportunities',
+    deadline: '2024-08-15'
   },
   {
     id: '3',
-    title: 'Educational Development Fund',
-    description: 'Grants for continuing education and professional development.',
-    category: 'education',
+    title: 'Veteran Housing Assistance Grant',
+    description: 'Support for veterans seeking housing assistance and home modifications.',
+    category: 'veteran',
     eligibilityCriteria: {
-      maxIncome: 60000,
-      requirements: ['High school diploma', 'US citizen', 'Enrollment in accredited institution']
+      requirements: [
+        'Must be a veteran',
+        'Honorable discharge',
+        'Demonstrate housing need'
+      ]
     },
-    amount: 'Up to $10,000',
-    applicationUrl: 'https://studentaid.gov/understand-aid/types/grants',
-    deadline: '2024-08-15'
+    amount: 'Up to $50,000',
+    applicationUrl: 'https://www.va.gov/housing-assistance',
+    deadline: '2024-12-31'
   }
 ];
