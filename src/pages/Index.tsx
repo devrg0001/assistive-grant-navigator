@@ -109,9 +109,11 @@ const Index = () => {
                 <Search className="w-4 h-4" />
                 Find Grants
               </Button>
-              <Button variant="outline" size="lg" onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}>
-                Learn More
-              </Button>
+              <Link to="/about-grants">
+                <Button variant="outline" size="lg">
+                  Learn More
+                </Button>
+              </Link>
             </div>
           </div>
 

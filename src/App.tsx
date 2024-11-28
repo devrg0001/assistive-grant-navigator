@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import GrantsList from "./pages/GrantsList";
+import AboutGrants from "./pages/AboutGrants";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/grants" element={<GrantsList />} />
+          <Route path="/about-grants" element={<AboutGrants />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
